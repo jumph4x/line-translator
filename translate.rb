@@ -16,8 +16,8 @@ def translate input, lang
   doc.css("#result_box").inner_text
 end
 
-def format_line text, offset
-  "--- --- #{text}#{offset}"
+def format_line text, offset, param
+  "--- --- #{param} #{text}#{offset}"
 end
 
 File.open(RU, 'w') do |ru_out|
@@ -28,14 +28,15 @@ File.open(EN, 'w') do |en_out|
     if match
       text = I18n.transliterate match[1]
       offset = line.match(/, (.+)/)
+      param  = line.match(/\- \-\-\- (.+) \-/)[1]
 
-      en_out.puts format_line(translate(text, "en"), offset)
-      ru_out.puts format_line(translate(text, "ru"), offset)
+      en_out.puts format_line(translate(text, "en"), offset, param)
+      ru_out.puts format_line(translate(text, "ru"), offset, param)
     # We simply copy the group name
     else
       existing = line.match(/\] (.+)/)
       next unless existing
-      
+
       en_out.puts existing[1]
       ru_out.puts existing[1]
     end
